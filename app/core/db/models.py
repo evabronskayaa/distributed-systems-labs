@@ -7,5 +7,5 @@ Base = declarative_base()
 class Link(Base):
     __tablename__ = "links"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     url = Column(String)

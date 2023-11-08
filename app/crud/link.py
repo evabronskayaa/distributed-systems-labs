@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from core.db.models import Link
+from app.core.db.models import Link
 
 
 def get_link_by_id(db: Session, id: int) -> Link:
