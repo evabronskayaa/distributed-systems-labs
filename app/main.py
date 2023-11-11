@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.endpoints.link import router as links_router
+from endpoints.link import router as links_router
 
 app = FastAPI()
 
