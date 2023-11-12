@@ -11,13 +11,24 @@ services:
     ports:
       - "5432:5432"
 
-  app:
+  app_1:
     build:
       context: .
       dockerfile: ./app/Dockerfile
     restart: on-failure
-    ports:
-      - "8000:8000"
+    # ports:
+    #   - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  app_2:
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile
+    restart: on-failure
     env_file:
       - .env
     depends_on:
@@ -47,6 +58,18 @@ services:
     env_file:
       - .env
 
+  balancer:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - app_1
+      - app_2
+    links:
+      - app_1
+      - app_2
 
 volumes:
   pgdata:
