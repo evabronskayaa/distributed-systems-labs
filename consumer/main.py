@@ -7,14 +7,16 @@ import requests
 
 
 USER = os.getenv("RABBITMQ_DEFAULT_USER")
-PASSWORD = os.getenv("RABBITMQ_DEFAULT_PASS")
+PASSWORD = os.getenv("RABBITMQ_DEFAULT_PASS") 
 BROKER_HOSTNAME = os.getenv("BROKER_HOSTNAME")
 WEB_HOSTNAME = os.getenv("WEB_HOSTNAME")
 WEB_PORT = os.getenv("WEB_PORT")
 
+
 QUEUE_NAME = os.getenv("RABBIT_QUEUE_NAME")
 
 CONNECTION_URL = f'amqp://{USER}:{PASSWORD}@{BROKER_HOSTNAME}:5672/%2f'
+print(CONNECTION_URL)
 
 
 def handle_message(ch, method, properties, body):
