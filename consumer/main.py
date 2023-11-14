@@ -29,7 +29,7 @@ def handle_message(ch, method, properties, body):
     payload = {'id': int(link_json['id']), 'status': str(status)}
     payload_json = json.dumps(payload)
     
-    requests.put(f'http://{WEB_HOSTNAME}:{WEB_PORT}/links/', data=payload_json)
+    requests.put(f'http://0.0.0.0/links/', data=payload_json)
 
 
 def main():
