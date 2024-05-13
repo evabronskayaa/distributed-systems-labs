@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14.3-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker:/docker-entrypoint-initdb.d/
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+
+  app_1:
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile
+    restart: on-failure
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  app_2:
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile
+    restart: on-failure
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    # env_file:
+    #   - .env
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbituser
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  consumer:
+    build:
+      context: .
+      dockerfile: ./consumer/Dockerfile
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+      - cache
+    links:
+       - rabbitmq
+       - cache
+    env_file:
+      - .env
+
+  balancer:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    ports:
+      - "8085:80"
+    env_file:
+      - .env
+    depends_on:
+      - app_1
+      - app_2
+    links:
+      - app_1
+      - app_2
+
+  cache:
+    image: redis
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
+    volumes:
+      - redis_data:/data
+
+
+volumes:
+  pgdata:
+  rabbitmq_data:
+  redis_data:

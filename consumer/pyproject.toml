@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "consumer"
+version = "0.1.0"
+description = ""
+authors = ["evabronskayaa <eva27122002b@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.31.0"
+pika = "^1.3.2"
+redis = "^5.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
